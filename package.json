@@ -9,8 +9,7 @@
     "server:dev": "nodemon server/index.js",
     "build": "vite build",
     "server": "node server/index.js",
-    "web-server:standalone": "serve -s dist",
-    "start": "npm run build && concurrently \"npm run server\" \"npm run web-server:standalone\""
+    "web-server:standalone": "serve -s dist"
   },
   "dependencies": {
     "express": "^4.21.2",
