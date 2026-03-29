@@ -1,0 +1,22 @@
+{
+  "name": "blackhole",
+  "version": "1.0.0",
+  "description": "Black Hole Multiplayer Clone",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "server": "node server/index.js",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "vite": "^6.0.7"
+  }
+}

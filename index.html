@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Black Hole | Multiplayer Board Game</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="particles-bg"></div>
+    <div class="glass-container">
+      <header>
+        <h1>BLACK HOLE</h1>
+        <p class="subtitle">A mathematical battle for survival</p>
+      </header>
+
+      <div id="alerts-container"></div>
+
+      <!-- Main Menu Navigation -->
+      <section id="menu-screen" class="screen active">
+        <div class="menu-box glass-panel">
+          <h2>Play Online</h2>
+          
+          <div class="form-group">
+            <label for="board-size">Board Size (Rows)</label>
+            <select id="board-size">
+              <option value="5">5 Rows (15 Circles) - Fast game</option>
+              <option value="6" selected>6 Rows (21 Circles) - Standard</option>
+              <option value="9">9 Rows (45 Circles) - Long game</option>
+              <option value="10">10 Rows (55 Circles) - Epic game</option>
+            </select>
+          </div>
+
+          <div class="action-buttons">
+            <button id="btn-public" class="btn primary">Matchmaking (Public)</button>
+            <div class="divider"><span>OR</span></div>
+            <button id="btn-create-private" class="btn secondary">Create Private Room</button>
+            <div class="join-private">
+              <input type="text" id="input-room-code" placeholder="Enter Room Code..." />
+              <button id="btn-join-private" class="btn tertiary">Join Room</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Waiting Area -->
+      <section id="waiting-screen" class="screen">
+        <div class="glass-panel text-center">
+          <h2 class="pulse-text">Waiting for Opponent...</h2>
+          <p id="room-code-display" class="highlight-text"></p>
+          <div class="loader"></div>
+        </div>
+      </section>
+
+      <!-- Game Board -->
+      <section id="game-screen" class="screen">
+        <div class="game-header">
+          <div class="player-card p1">
+            <span class="p-name">Player 1</span>
+            <span class="p-score" id="p1-score">Tokens: <span id="p1-tokens">0</span></span>
+          </div>
+          <div class="turn-indicator glass-panel">
+            <h3 id="turn-text">TURN</h3>
+            <p id="current-move-text">Placing: <span class="badge">1</span></p>
+          </div>
+          <div class="player-card p2">
+            <span class="p-name">Player 2</span>
+            <span class="p-score" id="p2-score">Tokens: <span id="p2-tokens">0</span></span>
+          </div>
+        </div>
+        
+        <div class="board-container">
+          <div id="board" class="pyramid-grid"></div>
+        </div>
+
+        <div class="game-footer">
+          <button id="btn-leave" class="btn danger outline">Leave Game</button>
+        </div>
+      </section>
+      
+      <!-- Game Over Modal -->
+      <div id="game-over-modal" class="modal">
+        <div class="modal-content glass-panel text-center">
+          <h2 id="winner-text" class="gradient-text">Game Over</h2>
+          <div class="results">
+            <p>Player 1 destroyed tokens: <span id="p1-final-score" class="bold">0</span></p>
+            <p>Player 2 destroyed tokens: <span id="p2-final-score" class="bold">0</span></p>
+            <p class="note text-muted">Winner is the player who lost the LEAST sum of tokens.</p>
+          </div>
+          <button id="btn-play-again" class="btn primary mt-4">Return to Menu</button>
+        </div>
+      </div>
+    </div>
+    
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
