@@ -27,6 +27,7 @@ body {
   justify-content: center;
   overflow-x: hidden;
   position: relative;
+  padding: 2% !important;
 }
 
 #particles-bg {
@@ -63,6 +64,7 @@ h1 {
   font-size: 3rem;
   background: linear-gradient(135deg, #a855f7, #3b82f6);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
   letter-spacing: 2px;
@@ -340,4 +342,138 @@ select:focus, input:focus {
 .highlight-text {
   font-size: 2rem; letter-spacing: 5px; color: var(--primary);
   margin-top: 1rem; font-weight: 800;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+  body {
+    align-items: flex-start;
+    padding: 2rem 2% !important; 
+  }
+
+  .glass-container {
+    width: 100%;
+    padding: 0 5%;
+    margin: 0 auto;
+  }
+
+  .glass-panel {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .game-header {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .player-card {
+    padding: 0.8rem 1rem;
+    min-width: 120px;
+    flex: 1;
+  }
+  
+  .turn-indicator {
+    order: -1; 
+    flex: 0 0 100%;
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  .circle {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+  
+  .pyramid-grid {
+    gap: 10px;
+  }
+  
+  .pyramid-row {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-panel {
+    padding: 1.2rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .player-card {
+    padding: 0.6rem;
+    min-width: 100px;
+  }
+  
+  .p-name {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .turn-indicator h3 {
+    font-size: 1.2rem;
+  }
+
+  .join-private {
+    flex-direction: column;
+  }
+  
+  .circle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    border-width: 1px;
+  }
+
+  .pyramid-grid {
+    gap: 6px;
+  }
+  
+  .pyramid-row {
+    gap: 4px;
+  }
+  
+  .circle.black-hole {
+    box-shadow: 0 0 20px var(--hole-glow), inset 0 0 10px rgba(0,0,0,0.9);
+  }
+  
+  .text-center h2 {
+    font-size: 1.4rem;
+  }
+  
+  .highlight-text {
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+  }
+  
+  .menu-box h2 {
+    font-size: 1.4rem;
+  }
+  
+  .action-buttons .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+  }
+  
+  select, input[type="text"] {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
 }
