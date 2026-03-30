@@ -26,8 +26,11 @@
   <body>
     <div id="particles-bg"></div>
     <div class="glass-container">
-      <header>
+      <header style="position: relative;">
         <h1>BLACK HOLE</h1>
+        <div id="online-users" style="position: absolute; top: 10px; right: 10px; font-size: 0.9rem; color: var(--primary); display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--glass-border);">
+          <span class="pulse-dot"></span> <span id="online-count">1</span> Online
+        </div>
         <p class="subtitle">A mathematical battle for survival</p>
       </header>
 

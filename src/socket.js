@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import { handleRoomCreated, handleJoinedRoom, handleGameUpdate, handleError } from './main.js';
+import { handleRoomCreated, handleJoinedRoom, handleGameUpdate, handleError, updateOnlineUsers } from './main.js';
 
 let socket = null;
 
@@ -15,6 +15,7 @@ export function initSocket() {
   socket.on('joined_room', handleJoinedRoom);
   socket.on('game_update', handleGameUpdate);
   socket.on('error_msg', handleError);
+  socket.on('online_users', updateOnlineUsers);
 
   return socket;
 }

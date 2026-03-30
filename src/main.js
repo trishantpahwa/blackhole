@@ -109,6 +109,13 @@ export function handleError(msg) {
   }
 }
 
+export function updateOnlineUsers(count) {
+  const onlineCountSpan = document.getElementById('online-count');
+  if (onlineCountSpan) {
+    onlineCountSpan.textContent = count;
+  }
+}
+
 // Game Rendering & UI Updates
 function renderBoard(state) {
   gameBoard.innerHTML = '';

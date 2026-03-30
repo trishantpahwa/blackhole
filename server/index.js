@@ -24,6 +24,7 @@ function generateInitialId() {
 
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
+  io.emit('online_users', io.engine.clientsCount);
   
   socket.on('create_room', (rows) => {
     let validRows = [5, 6, 9, 10];
@@ -100,6 +101,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
+    io.emit('online_users', io.engine.clientsCount);
     for (let [roomId, game] of games) {
       const isPlayer = game.players.some(p => p.id === socket.id);
       if (isPlayer) {
