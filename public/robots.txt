@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://blackhole-web-app.onrender.com/sitemap.xml
