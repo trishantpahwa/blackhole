@@ -102,6 +102,11 @@ export function handleGameUpdate(state) {
 
 export function handleError(msg) {
   showAlert(msg);
+  if (msg === 'Player left.') {
+    setTimeout(() => {
+      location.reload();
+    }, 1500);
+  }
 }
 
 // Game Rendering & UI Updates

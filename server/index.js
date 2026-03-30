@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
       if (isPlayer) {
         game.removePlayer(socket.id);
         io.to(roomId).emit('game_update', game.getState());
-        io.to(roomId).emit('error_msg', 'Opponent disconnected.');
+        io.to(roomId).emit('error_msg', 'Player left.');
         if (game.players.length === 0) {
           games.delete(roomId);
         }
