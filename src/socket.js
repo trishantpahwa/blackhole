@@ -5,7 +5,7 @@ let socket = null;
 
 export function initSocket() {
   // Connect to the same host using socket.io endpoint
-  socket = io(process.env.SERVER_URL);
+  socket = io(import.meta.env.VITE_SERVER_URL);
 
   socket.on('connect', () => {
     console.log('Connected to server', socket.id);
