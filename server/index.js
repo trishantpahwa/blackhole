@@ -26,12 +26,14 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
   io.emit('online_users', io.engine.clientsCount);
 
-  socket.on('create_room', (rows) => {
-    let validRows = [5, 6, 9, 10];
-    if (!validRows.includes(rows)) rows = 6; // default fallback
+  socket.on('create_room', ({ rows = 6, numPlayers = 2 }) => {
+    const totalCircles = (rows * (rows + 1)) / 2;
+    if ((totalCircles - 1) % numPlayers !== 0 || numPlayers < 2 || numPlayers > 4) {
+        rows = 6; numPlayers = 2; // default fallback
+    }
 
     const roomId = generateInitialId();
-    const game = new GameRoom(roomId, rows);
+    const game = new GameRoom(roomId, rows, numPlayers);
     games.set(roomId, game);
 
     const playerNum = game.addPlayer(socket.id);
@@ -61,11 +63,16 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('game_update', game.getState());
   });
 
-  socket.on('join_public', (rows) => {
+  socket.on('join_public', ({ rows = 6, numPlayers = 2 }) => {
+    const totalCircles = (rows * (rows + 1)) / 2;
+    if ((totalCircles - 1) % numPlayers !== 0 || numPlayers < 2 || numPlayers > 4) {
+        rows = 6; numPlayers = 2; // fallback
+    }
+
     // try to find a waiting room with same rows
     let foundRoom = null;
     for (let [, game] of games) {
-      if (game.status === 'waiting' && game.rows === rows && game.players.length === 1) {
+      if (game.status === 'waiting' && game.rows === rows && game.maxPlayers === numPlayers && game.players.length < numPlayers) {
         foundRoom = game;
         break;
       }
@@ -79,7 +86,7 @@ io.on('connection', (socket) => {
     } else {
       // create new public
       const roomId = generateInitialId();
-      const game = new GameRoom(roomId, rows);
+      const game = new GameRoom(roomId, rows, numPlayers);
       games.set(roomId, game);
       const playerNum = game.addPlayer(socket.id);
       socket.join(roomId);

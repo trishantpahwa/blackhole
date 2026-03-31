@@ -5,6 +5,8 @@
   --primary: #4ade80; /* Neon green */
   --p1-color: #3b82f6; /* Neon blue */
   --p2-color: #ef4444; /* Neon red */
+  --p3-color: #f59e0b; /* Amber */
+  --p4-color: #ec4899; /* Pink */
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --hole-color: #000000;
@@ -211,10 +213,20 @@ select:focus, input:focus {
   border-color: var(--p2-color);
   box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
 }
+.player-card.active.p3 {
+  border-color: var(--p3-color);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+.player-card.active.p4 {
+  border-color: var(--p4-color);
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+}
 
 .p-name { display: block; font-weight: 800; font-size: 1.2rem; margin-bottom: 0.3rem;}
 .p1 .p-name { color: var(--p1-color); }
 .p2 .p-name { color: var(--p2-color); }
+.p3 .p-name { color: var(--p3-color); }
+.p4 .p-name { color: var(--p4-color); }
 
 .turn-indicator {
   padding: 1rem 2rem;
@@ -276,6 +288,20 @@ select:focus, input:focus {
   background: var(--p2-color);
   border-color: #f87171;
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.5), inset 0 0 10px rgba(0,0,0,0.3);
+  color: white;
+  cursor: default;
+}
+.circle.p3-token {
+  background: var(--p3-color);
+  border-color: #fbbf24;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5), inset 0 0 10px rgba(0,0,0,0.3);
+  color: white;
+  cursor: default;
+}
+.circle.p4-token {
+  background: var(--p4-color);
+  border-color: #f472b6;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.5), inset 0 0 10px rgba(0,0,0,0.3);
   color: white;
   cursor: default;
 }

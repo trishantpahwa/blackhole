@@ -12,17 +12,16 @@ const inputRoomCode = document.getElementById('input-room-code');
 const roomCodeDisplay = document.getElementById('room-code-display');
 const btnLeave = document.getElementById('btn-leave');
 const selectBoardSize = document.getElementById('board-size');
+const selectNumPlayers = document.getElementById('num-players');
 
-const p1TokensEl = document.getElementById('p1-tokens');
-const p2TokensEl = document.getElementById('p2-tokens');
-const p1Card = document.querySelector('.player-card.p1');
-const p2Card = document.querySelector('.player-card.p2');
 const turnText = document.getElementById('turn-text');
 const currentMoveText = document.getElementById('current-move-text');
 const gameBoard = document.getElementById('board');
+const playersContainer = document.getElementById('players-container');
 
 const alertsContainer = document.getElementById('alerts-container');
 const gameOverModal = document.getElementById('game-over-modal');
+const gameOverResults = document.getElementById('game-over-results');
 
 // State
 let currentRoomId = null;
@@ -46,15 +45,48 @@ function showAlert(msg) {
   setTimeout(() => alert.remove(), 4000);
 }
 
+// Dropdown dynamic logic
+if (selectNumPlayers) {
+  selectNumPlayers.addEventListener('change', () => {
+    const numPlayers = parseInt(selectNumPlayers.value);
+    selectBoardSize.innerHTML = '';
+    const options = {
+      2: [
+        {val: 5, text: '5 Rows (15 Circles) - Fast game'},
+        {val: 6, text: '6 Rows (21 Circles) - Standard'},
+        {val: 9, text: '9 Rows (45 Circles) - Long game'},
+        {val: 10, text: '10 Rows (55 Circles) - Epic game'}
+      ],
+      3: [
+        {val: 4, text: '4 Rows (10 Circles) - Fast game'},
+        {val: 7, text: '7 Rows (28 Circles) - Standard'},
+        {val: 10, text: '10 Rows (55 Circles) - Epic game'}
+      ],
+      4: [
+        {val: 6, text: '6 Rows (21 Circles) - Fast game'},
+        {val: 9, text: '9 Rows (45 Circles) - Standard'}
+      ]
+    };
+    options[numPlayers].forEach(opt => {
+      const el = document.createElement('option');
+      el.value = opt.val;
+      el.textContent = opt.text;
+      selectBoardSize.appendChild(el);
+    });
+  });
+}
+
 // Event Listeners
 btnPublic.addEventListener('click', () => {
   const rows = parseInt(selectBoardSize.value);
-  joinPublic(rows);
+  const numPlayers = parseInt(selectNumPlayers?.value || 2);
+  joinPublic(rows, numPlayers);
 });
 
 btnCreatePrivate.addEventListener('click', () => {
   const rows = parseInt(selectBoardSize.value);
-  createRoom(rows);
+  const numPlayers = parseInt(selectNumPlayers?.value || 2);
+  createRoom(rows, numPlayers);
 });
 
 btnJoinPrivate.addEventListener('click', () => {
@@ -77,18 +109,32 @@ export function handleRoomCreated({ roomId, playerNum, state }) {
   currentRoomId = roomId;
   myPlayerNum = playerNum;
   roomCodeDisplay.textContent = `Room Code: ${roomId}`;
+  updateWaitingScreen(state);
   showScreen(waitingScreen);
 }
 
 export function handleJoinedRoom({ roomId, playerNum, state }) {
   currentRoomId = roomId;
   myPlayerNum = playerNum;
-  // Let game update handle transition to game screen
+  if (state.status === 'waiting') {
+    roomCodeDisplay.textContent = `Room Code: ${roomId}`;
+    updateWaitingScreen(state);
+    showScreen(waitingScreen);
+  }
+}
+
+function updateWaitingScreen(state) {
+    const waitingText = waitingScreen.querySelector('h2');
+    if (waitingText) {
+        waitingText.textContent = `Waiting for players... (${state.playersCount}/${state.maxPlayers})`;
+    }
 }
 
 export function handleGameUpdate(state) {
   if (state.status === 'playing' && document.querySelector('.screen.active') !== gameScreen) {
       showScreen(gameScreen);
+  } else if (state.status === 'waiting' && document.querySelector('.screen.active') === waitingScreen) {
+      updateWaitingScreen(state);
   }
 
   maxTokens = state.maxTokens;
@@ -165,24 +211,28 @@ function createCircle({ i, cell, isBlackHole, isMyTurn }) {
 }
 
 function updateUI(state) {
+    if (playersContainer) playersContainer.innerHTML = '';
+    
     // Current token info
-    let p1T = 0; let p2T = 0;
+    let counts = {};
+    for (let i = 1; i <= state.maxPlayers; i++) counts[i] = 0;
+    
     state.board.forEach(c => {
-        if(c) {
-            if(c.player===1) p1T++;
-            if(c.player===2) p2T++;
-        }
+        if(c) counts[c.player]++;
     });
 
-    p1TokensEl.textContent = `${p1T} / ${state.maxTokens}`;
-    p2TokensEl.textContent = `${p2T} / ${state.maxTokens}`;
-
-    p1Card.classList.remove('active');
-    p2Card.classList.remove('active');
-    
-    if (state.status === 'playing') {
-        if (state.turn === 1) p1Card.classList.add('active');
-        if (state.turn === 2) p2Card.classList.add('active');
+    if (playersContainer) {
+        for (let i = 1; i <= state.maxPlayers; i++) {
+            const card = document.createElement('div');
+            card.className = `player-card p${i}`;
+            if (state.status === 'playing' && state.turn === i) card.classList.add('active');
+            
+            card.innerHTML = `
+                <span class="p-name">Player ${i}</span>
+                <span class="p-score">Tokens: <span>${counts[i]} / ${state.maxTokens}</span></span>
+            `;
+            playersContainer.appendChild(card);
+        }
     }
 
     if (state.turn === myPlayerNum) {
@@ -221,8 +271,15 @@ function showGameOver(state) {
 
     setTimeout(() => {
         gameOverModal.classList.add('active');
-        document.getElementById('p1-final-score').textContent = state.scores.player1;
-        document.getElementById('p2-final-score').textContent = state.scores.player2;
+        
+        if (gameOverResults) {
+            gameOverResults.innerHTML = '';
+            for(let i=1; i <= state.maxPlayers; i++) {
+                const p = document.createElement('p');
+                p.innerHTML = `Player ${i} destroyed tokens: <span class="bold">${state.scores[`player${i}`] || 0}</span>`;
+                gameOverResults.appendChild(p);
+            }
+        }
 
         const winnerText = document.getElementById('winner-text');
         if (state.winner === 'draw') {

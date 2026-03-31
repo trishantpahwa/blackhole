@@ -20,16 +20,16 @@ export function initSocket() {
   return socket;
 }
 
-export function createRoom(rows) {
-  if (socket) socket.emit('create_room', rows);
+export function createRoom(rows, numPlayers) {
+  if (socket) socket.emit('create_room', { rows, numPlayers });
 }
 
 export function joinRoom(roomId) {
   if (socket) socket.emit('join_room', roomId);
 }
 
-export function joinPublic(rows) {
-  if (socket) socket.emit('join_public', rows);
+export function joinPublic(rows, numPlayers) {
+  if (socket) socket.emit('join_public', { rows, numPlayers });
 }
 
 export function makeMove(roomId, index) {

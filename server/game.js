@@ -1,24 +1,29 @@
 export class GameRoom {
-  constructor(id, rows) {
+  constructor(id, rows, maxPlayers) {
     this.id = id;
     this.rows = rows;
+    this.maxPlayers = maxPlayers || 2;
     this.totalCircles = (rows * (rows + 1)) / 2;
-    this.maxTokens = (this.totalCircles - 1) / 2; // Tokens each player gets
+    this.maxTokens = (this.totalCircles - 1) / this.maxPlayers;
     this.board = Array(this.totalCircles).fill(null); 
     this.players = []; // [{id, number}]
     this.turn = 1;
     this.currentValue = 1;
     this.status = 'waiting'; 
     this.winner = null;
-    this.scores = { player1: 0, player2: 0 };
+    this.scores = {};
+    for (let i = 1; i <= this.maxPlayers; i++) {
+        this.scores[`player${i}`] = 0;
+    }
     this.blackHoleIndex = -1;
   }
 
   addPlayer(playerId) {
-    if (this.players.length >= 2) return false;
-    const playerNum = this.players.length === 0 ? 1 : 2;
+    if (this.players.length >= this.maxPlayers) return false;
+    if (this.players.some(p => p.id === playerId)) return false;
+    const playerNum = this.players.length + 1;
     this.players.push({ id: playerId, number: playerNum });
-    if (this.players.length === 2) {
+    if (this.players.length === this.maxPlayers) {
       this.status = 'playing';
     }
     return playerNum;
@@ -29,7 +34,7 @@ export class GameRoom {
     if (!p) return;
     this.players = this.players.filter(p => p.id !== playerId);
     this.status = 'finished'; // end game if someone leaves early
-    this.winner = p.number === 1 ? 2 : 1; // other player wins by default
+    this.winner = this.players.length > 0 ? this.players[0].number : null; 
   }
 
   makeMove(playerId, index) {
@@ -41,8 +46,8 @@ export class GameRoom {
 
     this.board[index] = { player: player.number, value: this.currentValue };
 
-    if (this.turn === 1) {
-      this.turn = 2;
+    if (this.turn < this.maxPlayers) {
+      this.turn++;
     } else {
       this.turn = 1;
       this.currentValue++;
@@ -85,19 +90,31 @@ export class GameRoom {
     this.blackHoleIndex = this.board.findIndex(b => b === null);
 
     const neighbors = this.getNeighbors(this.blackHoleIndex);
-    this.scores = { player1: 0, player2: 0 };
+    this.scores = {};
+    for (let i = 1; i <= this.maxPlayers; i++) {
+        this.scores[`player${i}`] = 0;
+    }
+
     neighbors.forEach(nIndex => {
         const cell = this.board[nIndex];
         if (cell) {
-            if (cell.player === 1) this.scores.player1 += cell.value;
-            if (cell.player === 2) this.scores.player2 += cell.value;
+            this.scores[`player${cell.player}`] += cell.value;
         }
     });
 
-    if (this.scores.player1 < this.scores.player2) {
-        this.winner = 1;
-    } else if (this.scores.player2 < this.scores.player1) {
-        this.winner = 2;
+    let minScore = Infinity;
+    let minPlayers = [];
+    for (const [pKey, score] of Object.entries(this.scores)) {
+        if (score < minScore) {
+            minScore = score;
+            minPlayers = [parseInt(pKey.replace('player', ''))];
+        } else if (score === minScore) {
+            minPlayers.push(parseInt(pKey.replace('player', '')));
+        }
+    }
+
+    if (minPlayers.length === 1) {
+        this.winner = minPlayers[0];
     } else {
         this.winner = 'draw';
     }
@@ -111,6 +128,7 @@ export class GameRoom {
       turn: this.turn,
       currentValue: this.currentValue,
       maxTokens: this.maxTokens,
+      maxPlayers: this.maxPlayers,
       playersCount: this.players.length,
       winner: this.winner,
       scores: this.scores,
