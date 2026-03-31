@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
 
   socket.on('create_room', ({ rows = 6, numPlayers = 2 }) => {
     const totalCircles = (rows * (rows + 1)) / 2;
-    if ((totalCircles - 1) % numPlayers !== 0 || numPlayers < 2 || numPlayers > 4) {
+    if ((totalCircles - 1) % numPlayers !== 0 || numPlayers < 2 || numPlayers > 10) {
         rows = 6; numPlayers = 2; // default fallback
     }
 
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
 
   socket.on('join_public', ({ rows = 6, numPlayers = 2 }) => {
     const totalCircles = (rows * (rows + 1)) / 2;
-    if ((totalCircles - 1) % numPlayers !== 0 || numPlayers < 2 || numPlayers > 4) {
+    if ((totalCircles - 1) % numPlayers !== 0 || numPlayers < 2 || numPlayers > 10) {
         rows = 6; numPlayers = 2; // fallback
     }
 

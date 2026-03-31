@@ -47,33 +47,33 @@ function showAlert(msg) {
 
 // Dropdown dynamic logic
 if (selectNumPlayers) {
-  selectNumPlayers.addEventListener('change', () => {
+  function updateBoardSizes() {
     const numPlayers = parseInt(selectNumPlayers.value);
     selectBoardSize.innerHTML = '';
-    const options = {
-      2: [
-        {val: 5, text: '5 Rows (15 Circles) - Fast game'},
-        {val: 6, text: '6 Rows (21 Circles) - Standard'},
-        {val: 9, text: '9 Rows (45 Circles) - Long game'},
-        {val: 10, text: '10 Rows (55 Circles) - Epic game'}
-      ],
-      3: [
-        {val: 4, text: '4 Rows (10 Circles) - Fast game'},
-        {val: 7, text: '7 Rows (28 Circles) - Standard'},
-        {val: 10, text: '10 Rows (55 Circles) - Epic game'}
-      ],
-      4: [
-        {val: 6, text: '6 Rows (21 Circles) - Fast game'},
-        {val: 9, text: '9 Rows (45 Circles) - Standard'}
-      ]
-    };
-    options[numPlayers].forEach(opt => {
-      const el = document.createElement('option');
-      el.value = opt.val;
-      el.textContent = opt.text;
-      selectBoardSize.appendChild(el);
-    });
-  });
+    let found = false;
+    for (let r = 4; r <= 16; r++) {
+      const totalCircles = (r * (r + 1)) / 2;
+      if ((totalCircles - 1) % numPlayers === 0) {
+        found = true;
+        const el = document.createElement('option');
+        el.value = r;
+        el.textContent = `${r} Rows (${totalCircles} Circles)`;
+        // Select standard sizes by default if possible
+        if (totalCircles >= 20 && totalCircles <= 30 && !selectBoardSize.children.length) {
+            el.selected = true;
+        }
+        selectBoardSize.appendChild(el);
+      }
+    }
+    if (!found) {
+        const el = document.createElement('option');
+        el.value = 6;
+        el.textContent = '6 Rows (Fallback)';
+        selectBoardSize.appendChild(el);
+    }
+  }
+  selectNumPlayers.addEventListener('change', updateBoardSizes);
+  updateBoardSizes(); // init
 }
 
 // Event Listeners
