@@ -25,7 +25,7 @@ function generateInitialId() {
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
   io.emit('online_users', io.engine.clientsCount);
-  
+
   socket.on('create_room', (rows) => {
     let validRows = [5, 6, 9, 10];
     if (!validRows.includes(rows)) rows = 6; // default fallback
@@ -33,10 +33,10 @@ io.on('connection', (socket) => {
     const roomId = generateInitialId();
     const game = new GameRoom(roomId, rows);
     games.set(roomId, game);
-    
+
     const playerNum = game.addPlayer(socket.id);
     socket.join(roomId);
-    
+
     socket.emit('room_created', { roomId, playerNum, state: game.getState() });
   });
 
@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     socket.join(roomId);
 
     socket.emit('joined_room', { roomId, playerNum, state: game.getState() });
-    
+
     // Notify all in room
     io.to(roomId).emit('game_update', game.getState());
   });
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
   socket.on('make_move', ({ roomId, index }) => {
     if (!games.has(roomId)) return;
     const game = games.get(roomId);
-    
+
     const result = game.makeMove(socket.id, index);
     if (result.error) {
       socket.emit('error_msg', result.error);
@@ -117,7 +117,7 @@ io.on('connection', (socket) => {
   });
 });
 
-app.use(express.static(path.join(__dirname, '../dist')));
+app.get("/", (request, response) => response.send("Nothing to do here!"));
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
